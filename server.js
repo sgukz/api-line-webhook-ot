@@ -56,27 +56,41 @@ app.post("/webhook", function (req, res) {
     }
 
     let URL = `${BASE_PATH}/ot/getOTtoDay?token=${KEY_API}`
-    const header = {
-        "Content-Type": "application/json",
-    };
-    axios
-        .get(URL, { headers: header })
-        .then((resp) => {
-            let formatMessage = {
-                type: "text",
-                text: JSON.stringify(resp.data),
-            };
-            reply(userId, formatMessage);
-            res.sendStatus(200);
-        })
-        .catch((error) => {
-            let formatMessage = {
-                type: "text",
-                text: JSON.stringify(error),
-            };
-            reply(userId, formatMessage);
-            res.sendStatus(400);
-        });
+
+    request(URL, function (error, response, body) {
+        // console.error('error:', error); // Print the error if one occurred
+        // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        // console.log('body:', body); // Print the HTML for the Google homepage.
+        let jsonData = {
+            error: error,
+            response: response,
+            body: body
+        }
+        let formatMessage = {
+            type: "text",
+            text: JSON.stringify(jsonData),
+        };
+        reply(userId, formatMessage);
+    });
+
+    // axios
+    //     .get(URL, { headers: header })
+    //     .then((resp) => {
+    //         let formatMessage = {
+    //             type: "text",
+    //             text: JSON.stringify(resp.data),
+    //         };
+    //         reply(userId, formatMessage);
+    //         res.sendStatus(200);
+    //     })
+    //     .catch((error) => {
+    //         let formatMessage = {
+    //             type: "text",
+    //             text: JSON.stringify(error),
+    //         };
+    //         reply(userId, formatMessage);
+    //         res.sendStatus(400);
+    //     });
 
     // if (subString.length === 2) {
     //     if (subString[0].trim() === "เวรบ่าย" || subString[0].trim() === "บ่าย") {
