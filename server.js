@@ -39,36 +39,44 @@ app.post("/body", function (req, res) {
 });
 
 app.post("/webhook", function (req, res) {
-    // const toTwoDigits = (num) => (num < 10 ? "0" + num : num);
-    // let today = new Date();
-    // let year = today.getFullYear();
-    // let month = toTwoDigits(today.getMonth() + 1);
-    // let day = toTwoDigits(today.getDate());
-    // let date_now = `${year}-${month}-${day}`;
-    // let Months = formateDateTH(date_now, 1);
-    // let userId = "";
-    // // let userMessage = "เวรบ่าย,ปัสธร";
-    // let userMessage = req.body.events[0].message.text;
-    // let subString = userMessage.split(",");
-    // if (req.body.events[0].source.groupId != undefined) {
-    //     userId = req.body.events[0].source.groupId;
-    // } else {
-    //     userId = req.body.events[0].source.userId;
-    // }
-
+    const toTwoDigits = (num) => (num < 10 ? "0" + num : num);
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = toTwoDigits(today.getMonth() + 1);
+    let day = toTwoDigits(today.getDate());
+    let date_now = `${year}-${month}-${day}`;
+    let Months = formateDateTH(date_now, 1);
     let userId = "";
+    let userMessage = req.body.events[0].message.text;
+    let subString = userMessage.split(",");
     if (req.body.events[0].source.groupId != undefined) {
         userId = req.body.events[0].source.groupId;
     } else {
         userId = req.body.events[0].source.userId;
     }
 
-    let formatMessage = {
-        type: "text",
-        text: JSON.stringify(req.body),
+    let URL = `${BASE_PATH}/ot/getOTtoDay?token=${KEY_API}`
+    const header = {
+        "Content-Type": "application/json",
     };
-    reply(userId, formatMessage);
-    res.sendStatus(200);
+    axios
+        .get(URL, { headers: header })
+        .then((resp) => {
+            let formatMessage = {
+                type: "text",
+                text: JSON.stringify(resp.data),
+            };
+            reply(userId, formatMessage);
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            let formatMessage = {
+                type: "text",
+                text: JSON.stringify(error),
+            };
+            reply(userId, formatMessage);
+            res.sendStatus(400);
+        });
 
     // if (subString.length === 2) {
     //     if (subString[0].trim() === "เวรบ่าย" || subString[0].trim() === "บ่าย") {
