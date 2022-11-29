@@ -61,6 +61,7 @@ app.post("/webhook", cors(), function (req, res) {
     let day = toTwoDigits(today.getDate());
     let date_now = `${year}-${month}-${day}`;
     let Months = formateDateTH(date_now, 1);
+    let thaiDate = formateDateTH(date_now, 2);
     let userId = "";
     let userMessage = req.body.events[0].message.text;
     let subString = userMessage.split(",");
