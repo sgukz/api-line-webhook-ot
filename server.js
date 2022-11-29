@@ -154,6 +154,82 @@ app.post("/webhook", cors(), function (req, res) {
                     res.status(200).json({ msg: "ok" });
                 })
                 .catch((error) => console.log("Error :", error));
+        } else if (subString[0].trim() === "เวรเที่ยง" || subString[0].trim() === "เที่ยง") {
+            let nameUser = subString[1].trim();
+            let URL = `${BASE_PATH}/ot/getOtAfternoonByName?token=${KEY_API}&nameComcenter=${nameUser}`
+            const header = {
+                "Content-Type": "application/json",
+            };
+            axios
+                .get(URL, { headers: header })
+                .then((resp) => {
+                    let data = resp.data.data;
+                    let fullnameUser = data[0].name;
+                    let listDate = [
+                        {
+                            type: "text",
+                            text: Months,
+                            size: "md",
+                            weight: "bold",
+                        },
+                    ];
+                    data.forEach((val) => {
+                        let chkToday = val.date_time === date_now ? "วันนี้" : "     ";
+                        listDate.push({
+                            type: "text",
+                            text: "วันที่ ",
+                            margin: "10px",
+                            contents: [
+                                {
+                                    type: "span",
+                                    text: "" + chkToday,
+                                    size: "16px",
+                                    color: "#28b463",
+                                },
+                                {
+                                    type: "span",
+                                    text: " " + formateDateTH(val.date_time, 2),
+                                    size: "18px",
+                                },
+                            ],
+                        });
+                    });
+                    let formatMessage = {
+                        type: "flex",
+                        altText: "เวรเที่ยงศูนย์คอมพิวเตอร์ ",
+                        contents: {
+                            type: "bubble",
+                            styles: {
+                                header: {
+                                    backgroundColor: "#11DA54",
+                                },
+                            },
+                            header: {
+                                type: "box",
+                                layout: "baseline",
+                                contents: [
+                                    {
+                                        type: "text",
+                                        text: "" + fullnameUser,
+                                        weight: "bold",
+                                        color: "#FFFFFF",
+                                        size: "xl",
+                                        flex: 1,
+                                    },
+                                ],
+                            },
+                            body: {
+                                type: "box",
+                                layout: "vertical",
+                                contents: listDate,
+                            },
+                        },
+                    };
+                    reply(userId, formatMessage);
+                    res.status(200).json({ msg: "ok" });
+
+                })
+                .catch((error) => console.log("Error :", error));
         }
     }
     if (userMessage == "เวรบ่าย" || userMessage == "บ่าย") {
@@ -553,6 +629,238 @@ app.post("/webhook", cors(), function (req, res) {
                 res.sendStatus(200);
             })
             .catch((error) => console.log("Error :", error));
+    } else if (userMessage === "เวรเที่ยง" || userMessage == "เที่ยง") {
+        let URL = `${BASE_PATH}/ot/getOtAfternoon?token=${KEY_API}`
+        const header = {
+            "Content-Type": "application/json",
+        };
+        axios
+            .get(URL, { headers: header })
+            .then((resp) => {
+                let data = resp.data.data;
+                let name_today = data[0].name;
+                let name_tomorrow = data[1].name;
+                let formatMessage = {
+                    type: "flex",
+                    altText: "เวรเที่ยงศูนย์คอมพิวเตอร์ ",
+                    contents: {
+                        type: "bubble",
+                        size: "mega",
+                        header: {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "box",
+                                    layout: "vertical",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "เวรเที่ยงศูนย์คอมพิวเตอร์ ",
+                                            color: "#ffffff",
+                                            size: "md",
+                                            flex: 1,
+                                            weight: "bold",
+                                        },
+                                    ],
+                                },
+                            ],
+                            paddingAll: "20px",
+                            backgroundColor: "#11DA54",
+                            spacing: "md",
+                            paddingTop: "22px",
+                        },
+                        body: {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "วันที่ " + thaiDate,
+                                    size: "md",
+                                    weight: "bold",
+                                },
+                                {
+                                    type: "box",
+                                    layout: "horizontal",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "วันนี้",
+                                            size: "sm",
+                                            color: "#8c8c8c",
+                                            gravity: "center",
+                                        },
+                                        {
+                                            type: "box",
+                                            layout: "vertical",
+                                            contents: [
+                                                {
+                                                    type: "filler",
+                                                },
+                                                {
+                                                    type: "box",
+                                                    layout: "vertical",
+                                                    contents: [
+                                                        {
+                                                            type: "filler",
+                                                        },
+                                                    ],
+                                                    cornerRadius: "30px",
+                                                    height: "12px",
+                                                    width: "12px",
+                                                    borderColor: "#EF454D",
+                                                    borderWidth: "2px",
+                                                },
+                                                {
+                                                    type: "filler",
+                                                },
+                                            ],
+                                            flex: 0,
+                                        },
+                                        {
+                                            type: "text",
+                                            text: name_today,
+                                            gravity: "center",
+                                            flex: 4,
+                                            size: "md",
+                                            weight: "bold",
+                                        },
+                                    ],
+                                    spacing: "lg",
+                                    cornerRadius: "30px",
+                                    margin: "xl",
+                                },
+                                {
+                                    type: "box",
+                                    layout: "horizontal",
+                                    contents: [
+                                        {
+                                            type: "box",
+                                            layout: "baseline",
+                                            contents: [
+                                                {
+                                                    type: "filler",
+                                                },
+                                            ],
+                                            flex: 1,
+                                        },
+                                        {
+                                            type: "box",
+                                            layout: "vertical",
+                                            contents: [
+                                                {
+                                                    type: "box",
+                                                    layout: "horizontal",
+                                                    contents: [
+                                                        {
+                                                            type: "filler",
+                                                        },
+                                                        {
+                                                            type: "box",
+                                                            layout: "vertical",
+                                                            contents: [
+                                                                {
+                                                                    type: "filler",
+                                                                },
+                                                            ],
+                                                            width: "2px",
+                                                            backgroundColor: "#B7B7B7",
+                                                        },
+                                                        {
+                                                            type: "filler",
+                                                        },
+                                                    ],
+                                                    flex: 1,
+                                                },
+                                            ],
+                                            width: "12px",
+                                        },
+                                        {
+                                            type: "text",
+                                            text: " ",
+                                            gravity: "center",
+                                            flex: 4,
+                                            size: "sm",
+                                            color: "#8c8c8c",
+                                        },
+                                    ],
+                                    spacing: "lg",
+                                    height: "40px",
+                                },
+                                {
+                                    type: "box",
+                                    layout: "horizontal",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "พรุ่งนี้",
+                                            size: "sm",
+                                            color: "#8c8c8c",
+                                            gravity: "center",
+                                        },
+                                        {
+                                            type: "box",
+                                            layout: "vertical",
+                                            contents: [
+                                                {
+                                                    type: "filler",
+                                                },
+                                                {
+                                                    type: "box",
+                                                    layout: "vertical",
+                                                    contents: [
+                                                        {
+                                                            type: "filler",
+                                                        },
+                                                    ],
+                                                    cornerRadius: "30px",
+                                                    width: "12px",
+                                                    height: "12px",
+                                                    borderWidth: "2px",
+                                                    borderColor: "#6486E3",
+                                                },
+                                                {
+                                                    type: "filler",
+                                                },
+                                            ],
+                                            flex: 0,
+                                        },
+                                        {
+                                            type: "text",
+                                            text: name_tomorrow,
+                                            gravity: "center",
+                                            flex: 4,
+                                            size: "md",
+                                            weight: "bold",
+                                        },
+                                    ],
+                                    spacing: "lg",
+                                    cornerRadius: "30px",
+                                },
+                            ],
+                        },
+                        footer: {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "button",
+                                    style: "link",
+                                    action: {
+                                        type: "uri",
+                                        label: "ดูเพิ่มเติม",
+                                        uri: "https://reh.go.th/views-ot/comcenter.php",
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                };
+                reply(userId, formatMessage);
+                res.sendStatus(200);
+            })
+            .catch((error) => console.log("Error :", error));
     }
 });
 
@@ -561,29 +869,29 @@ function formateDateTH(dateTime, style) {
     let day = parseInt(date[2]);
     let month = parseInt(date[1]);
     let strMonthCut = [
-      "",
-      "มกราคม",
-      "กุมภาพันธ์",
-      "มีนาคม",
-      "เมษายน",
-      "พฤษภาคม",
-      "มิถุนายน",
-      "กรกฎาคม",
-      "สิงหาคม",
-      "กันยายน",
-      "ตุลาคม",
-      "พฤศจิกายน",
-      "ธันวาคม",
+        "",
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม",
     ];
     let year = parseInt(date[0]) + 543;
-  
+
     let createdDate =
-      style === 1
-        ? strMonthCut[month] + " " + year
-        : day + " " + strMonthCut[month] + " " + year;
+        style === 1
+            ? strMonthCut[month] + " " + year
+            : day + " " + strMonthCut[month] + " " + year;
     //console.log(createdDate);
     return createdDate;
-  }
+}
 
 function reply(userId, formatMessage) {
     let headers = {
