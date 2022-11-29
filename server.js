@@ -12,6 +12,14 @@ app.use(
 );
 app.use(bodyParser.json());
 
+app.get("/", function (req, res) {
+    res.status(200).json({
+        status: 200,
+        msg: "ok"
+    });
+});
+
+
 app.post("/body", function (req, res) {
     let userId = "U0ce66a9d268b3f1d81d04b30631acc87";
     // if (req.body.events[0].source.groupId != undefined) {
