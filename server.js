@@ -898,7 +898,7 @@ function reply(userId, formatMessage) {
     let headers = {
         "Content-Type": "application/json",
         Authorization:
-            "Bearer {5cq1A8h1FPtIL92Bm8/QSvhR9R1Lw5x/u7aAmI0MUEFnQa9aRTmbAb25X/1YL1p/hRidBLAcqYF53LDWrqi/aNpSM8brObimFH/n3qh4PcXoiaZtnaiip5rIfXnWywayJZOYfF8W2AKdVsvnNiQlAQdB04t89/1O/w1cDnyilFU=}", // Channel access token
+            "Bearer {xHGZy7ih0yDUH3pBpe/wiOEgDF4kVnAqr64zXr7y/H2HRZVydE+hvXB1CU5RjnSk3dygASPut2/fD42ocwSVuG47n7eSRkjlns/2w2VfBz3dOGwx8K9ZfWdKaQ54PIVHheRqrBO53ivj5n18+4L+gQdB04t89/1O/w1cDnyilFU=}", // Channel access token
     };
     let body = JSON.stringify({
         to: userId,
